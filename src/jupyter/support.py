@@ -121,15 +121,18 @@ def get_kfold_results(models: list, X: np.ndarray, y: np.ndarray) -> dict:
 # UDF: plot kfold results
 def plot_kfold_results(kfold_results: dict, title: str=None):
     data_to_plot = pd.DataFrame(kfold_results)
+    fig, ax = plt.subplots()
     ##
     sorted_idxes = data_to_plot.mean()\
         .sort_values(ascending=False).index.tolist()
     data_to_plot = data_to_plot.reindex(sorted_idxes, axis=1)
     ##
-    g = sns.boxplot(data_to_plot)
+    g = sns.boxplot(data_to_plot, fill=False, showmeans=True, ax=ax)
     g.set_title(title, fontdict=dict(size=15))
 
     plt.show()
+
+    return fig
 
 # UDF: dump model
 """
