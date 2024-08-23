@@ -208,7 +208,7 @@ class InitBinaryTree():
 # UDC: base customized transformer for sequatial feature selection task
 class FSBaseTransformer(BaseEstimator, TransformerMixin):
     ##
-    def __init__(self,tree: InitBinaryTree) -> None:
+    def __init__(self, tree: InitBinaryTree) -> None:
         self.tree = tree
 
         return None
