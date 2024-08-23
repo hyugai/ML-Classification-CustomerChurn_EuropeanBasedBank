@@ -23,7 +23,7 @@ from sklearn.impute import SimpleImputer, KNNImputer
 from sklearn.compose import ColumnTransformer
 
 # resampling
-from imblearn.over_sampling import RandomOverSampler, SMOTE
+from imblearn.over_sampling import RandomOverSampler, SMOTE, SMOTENC
 from imblearn.under_sampling import EditedNearestNeighbours, TomekLinks
 from imblearn.combine import SMOTEENN, SMOTETomek
 
@@ -55,6 +55,8 @@ import optuna
 # others
 import cloudpickle, uuid
 from sklearn.base import BaseEstimator, TransformerMixin, ClassifierMixin
+from imblearn import FunctionSampler
+from sklearn.preprocessing import FunctionTransformer
 from typing import Callable
 
 # UDF: prepare data to train model
@@ -133,6 +135,32 @@ def plot_kfold_results(kfold_results: dict, title: str=None):
     plt.show()
 
     return fig
+
+# UDF: Category detection for SMOTENC
+def auto_smotenc(X: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    cat_idxes = []
+    for i in range(X.shape[1]):
+        try:
+            float(X[0, i])
+        except:
+            cat_idxes.append(i)
+
+    resampler = SMOTENC(categorical_features=cat_idxes)
+
+    return resampler.fit_resample(X, y)
+
+# UDF: Perform dummy encoding automatically
+def auto_dummy_encode(X: np.ndarray) -> np.ndarray:
+    cat_idxes = []
+    for i in range(X.shape[1]):
+        try:
+            float(X[0, i])
+        except:
+            cat_idxes.append(i)
+    ct = ColumnTransformer([('cat_pro', OneHotEncoder(drop='first', sparse_output=False), cat_idxes)], 
+                           remainder='passthrough')
+    
+    return ct.fit_transform(X)
 
 # UDF: dump model
 """
