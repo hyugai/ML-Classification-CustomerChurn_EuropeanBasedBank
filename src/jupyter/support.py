@@ -86,6 +86,17 @@ def load_base_models() -> list:
 
     return base_models
 
+# UDF: load cost sensitive models
+def load_cost_sensitive_models() -> list:
+    cost_sensitive_models = []
+    cost_sensitive_models.append(('LR', LogisticRegression(n_jobs=-1, class_weight='balanced')))
+    cost_sensitive_models.append(('ER', ExtraTreesClassifier(n_jobs=-1, class_weight='balanced')))
+    cost_sensitive_models.append(('RF', RandomForestClassifier(n_jobs=-1, class_weight='balanced')))
+    cost_sensitive_models.append(('LGBM', LGBMClassifier(n_jobs=-1, verbose=-1, class_weight='balanced')))
+    cost_sensitive_models.append(('XGB', XGBClassifier(n_jobs=-1, scale_pos_weight=99)))
+
+    return load_cost_sensitive_models
+
 # UDF: load resamplers
 def load_resammplers() -> list:
     resamplers = []
